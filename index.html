@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phantom Investigation Board</title>
+  <style>
+    body {
+      background-color: #0c0c0f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #f0f0f0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #8ff1ff;
+      text-shadow: 0 0 8px #5ee9ff;
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .section {
+      background-color: #1a1a25;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 12px #3af0ff33;
+    }
+
+    .section h2 {
+      color: #9af0ff;
+      text-shadow: 0 0 6px #5ee9ff88;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      background-color: #222;
+      border: 2px solid #555;
+      border-radius: 8px;
+      color: #ccc;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #333;
+    }
+
+    .btn.active {
+      background-color: #00bcd4;
+      border-color: #00e5ff;
+      color: #fff;
+      box-shadow: 0 0 8px #00e5ff;
+    }
+
+    .ghost-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .ghost {
+      display: flex;
+      align-items: center;
+      background-color: #101018;
+      border: 2px solid #222;
+      border-radius: 6px;
+      padding: 8px 12px;
+      transition: 0.2s;
+    }
+
+    .ghost.highlight {
+      background-color: #00bcd4;
+      color: white;
+      border-color: #00e5ff;
+      box-shadow: 0 0 8px #00e5ff;
+    }
+
+    .ghost::before {
+      content: "[ ]";
+      display: inline-block;
+      margin-right: 10px;
+      color: #ccc;
+    }
+
+    .ghost.highlight::before {
+      content: "[✓]";
+      color: #00e5ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Phantom Investigation</h1>
+
+  <div class="board">
+    <div class="section">
+      <h2>Select Evidence</h2>
+      <div class="buttons" id="evidence-buttons">
+        <button class="btn" data-evidence="Spirit Box">Spirit Box</button>
+        <button class="btn" data-evidence="Cold Spots">Cold Spots</button>
+        <button class="btn" data-evidence="EMF Sensor">EMF Sensor</button>
+        <button class="btn" data-evidence="Ghost Writing">Ghost Writing</button>
+        <button class="btn" data-evidence="Ghost Orbs">Ghost Orbs</button>
+        <button class="btn" data-evidence="Playful">Playful</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Ghost / Paranormal Entities</h2>
+      <div class="ghost-list" id="ghostList"></div>
+    </div>
+  </div>
+
+  <script>
+    const ghostData = {
+      "Poltergeist": ["Spirit Box", "EMF Sensor", "Ghost Writing"],
+      "Wailing Soul": ["Cold Spots", "Spirit Box", "Ghost Orbs"],
+      "Demon": ["Ghost Writing", "Cold Spots", "EMF Sensor"],
+      "Hupia": ["Ghost Orbs", "Playful", "Spirit Box"],
+      "Duppy": ["EMF Sensor", "Spirit Box", "Cold Spots"],
+      "Vetala": ["Ghost Writing", "Playful", "Ghost Orbs"],
+      "Shy": ["Cold Spots", "Spirit Box", "Ghost Writing"],
+      "Spirit": ["Spirit Box", "Ghost Writing", "EMF Sensor"],
+      "Basty": ["Cold Spots", "Playful", "Ghost Orbs"],
+      "Gelin": ["Ghost Orbs", "EMF Sensor", "Ghost Writing"],
+      "Dybbuk": ["Playful", "Spirit Box", "Cold Spots"],
+      "Moroi": ["Ghost Writing", "EMF Sensor", "Cold Spots"],
+      "Shade": ["Ghost Writing", "Ghost Orbs", "EMF Sensor"],
+      "Jumbee": ["Cold Spots", "Playful", "Spirit Box"]
+    };
+
+    const selectedEvidence = new Set();
+
+    const ghostList = document.getElementById('ghostList');
+    const evidenceButtons = document.querySelectorAll('#evidence-buttons .btn');
+
+    function renderGhosts() {
+      ghostList.innerHTML = '';
+      for (const [ghost, evidences] of Object.entries(ghostData)) {
+        const match = [...selectedEvidence].every(ev => evidences.includes(ev));
+        const div = document.createElement('div');
+        div.className = 'ghost' + (match && selectedEvidence.size ? ' highlight' : '');
+        div.textContent = ghost;
+        ghostList.appendChild(div);
+      }
+    }
+
+    evidenceButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const ev = button.dataset.evidence;
+        if (selectedEvidence.has(ev)) {
+          selectedEvidence.delete(ev);
+          button.classList.remove('active');
+        } else {
+          selectedEvidence.add(ev);
+          button.classList.add('active');
+        }
+        renderGhosts();
+      });
+    });
+
+    renderGhosts();
+  </script>
+</body>
+</html>
