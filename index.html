@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Phantom Investigation Board</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phantom Investigation</title>
   <style>
     body {
       background-color: #0c0c0f;
       font-family: 'Segoe UI', sans-serif;
       color: #f0f0f0;
-      padding: 40px;
+      padding: 20px;
+      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,28 +20,31 @@
       color: #8ff1ff;
       text-shadow: 0 0 8px #5ee9ff;
       margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.8em;
     }
 
     .board {
       display: flex;
       flex-direction: column;
       gap: 30px;
-      max-width: 700px;
       width: 100%;
+      max-width: 800px;
     }
 
     .section {
       background-color: #1a1a25;
       border: 2px solid #333;
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
       box-shadow: 0 0 12px #3af0ff33;
     }
 
     .section h2 {
       color: #9af0ff;
       text-shadow: 0 0 6px #5ee9ff88;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      font-size: 1.3em;
     }
 
     .buttons {
@@ -56,6 +61,8 @@
       padding: 10px 16px;
       cursor: pointer;
       transition: 0.2s;
+      flex: 1 1 calc(50% - 12px);
+      text-align: center;
     }
 
     .btn:hover {
@@ -71,18 +78,19 @@
 
     .ghost-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
     }
 
     .ghost {
-      display: flex;
-      align-items: center;
       background-color: #101018;
       border: 2px solid #222;
       border-radius: 6px;
-      padding: 8px 12px;
-      transition: 0.2s;
+      padding: 10px 12px;
+      font-size: 1em;
+      text-align: left;
+      display: flex;
+      align-items: center;
     }
 
     .ghost.highlight {
@@ -94,7 +102,6 @@
 
     .ghost::before {
       content: "[ ]";
-      display: inline-block;
       margin-right: 10px;
       color: #ccc;
     }
@@ -103,59 +110,71 @@
       content: "[✓]";
       color: #00e5ff;
     }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      .btn {
+        font-size: 0.95em;
+        padding: 8px 12px;
+      }
+      .ghost {
+        font-size: 0.95em;
+        padding: 8px 10px;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>Phantom Investigation</h1>
-
   <div class="board">
     <div class="section">
-      <h2>Select Evidence</h2>
+      <h2>Ghost Evidence</h2>
       <div class="buttons" id="evidence-buttons">
-        <button class="btn" data-evidence="Spirit Box">Spirit Box</button>
-        <button class="btn" data-evidence="Cold Spots">Cold Spots</button>
-        <button class="btn" data-evidence="EMF Sensor">EMF Sensor</button>
-        <button class="btn" data-evidence="Ghost Writing">Ghost Writing</button>
-        <button class="btn" data-evidence="Ghost Orbs">Ghost Orbs</button>
-        <button class="btn" data-evidence="Playful">Playful</button>
+        <button class="btn" data-evidence="EMF Sensor">🔊 EMF Sensor</button>
+        <button class="btn" data-evidence="Cold Spots">❄️ Cold Spots</button>
+        <button class="btn" data-evidence="Spirit Box">📻 Spirit Box</button>
+        <button class="btn" data-evidence="Ghost Orbs">🟡 Ghost Orbs</button>
+        <button class="btn" data-evidence="Ghost Writing">📝 Ghost Writing</button>
+        <button class="btn" data-evidence="Playful">🎈 Playful</button>
       </div>
     </div>
 
     <div class="section">
-      <h2>Ghost / Paranormal Entities</h2>
+      <h2>Matching Ghosts</h2>
       <div class="ghost-list" id="ghostList"></div>
     </div>
   </div>
 
   <script>
     const ghostData = {
-      "Poltergeist": ["Spirit Box", "EMF Sensor", "Ghost Writing"],
-      "Wailing Soul": ["Cold Spots", "Spirit Box", "Ghost Orbs"],
-      "Demon": ["Ghost Writing", "Cold Spots", "EMF Sensor"],
-      "Hupia": ["Ghost Orbs", "Playful", "Spirit Box"],
-      "Duppy": ["EMF Sensor", "Spirit Box", "Cold Spots"],
-      "Vetala": ["Ghost Writing", "Playful", "Ghost Orbs"],
-      "Shy": ["Cold Spots", "Spirit Box", "Ghost Writing"],
-      "Spirit": ["Spirit Box", "Ghost Writing", "EMF Sensor"],
-      "Basty": ["Cold Spots", "Playful", "Ghost Orbs"],
-      "Gelin": ["Ghost Orbs", "EMF Sensor", "Ghost Writing"],
-      "Dybbuk": ["Playful", "Spirit Box", "Cold Spots"],
-      "Moroi": ["Ghost Writing", "EMF Sensor", "Cold Spots"],
-      "Shade": ["Ghost Writing", "Ghost Orbs", "EMF Sensor"],
-      "Jumbee": ["Cold Spots", "Playful", "Spirit Box"]
+      "Poltergeist": ["EMF Sensor", "Ghost Writing", "Ghost Orbs"],	
+      "Wailing Soul": ["Spirit Box", "EMF Sensor", "Ghost Orbs"],	
+      "Demon": ["EMF Sensor", "Playful", "Ghost Writing"],			
+	  "Hupia": ["Cold Spots", "EMF Sensor", "Ghost Orbs"],			
+      "Duppy": ["Playful", "EMF Sensor", "Ghost Orbs"],				
+      "Vetala": ["Spirit Box", "Ghost Writing", "Ghost Orbs"],		
+      "Shy": ["Cold Spots", "Playful", "Ghost Writing"],			
+      "Spirit": ["Spirit Box", "Playful", "EMF Sensor"],			
+      "Basty": ["Cold Spots", "Playful", "EMF Sensor"],				
+      "Gelin": ["Cold Spots", "Ghost Writing", "Ghost Orbs"],		
+      "Dybbuk": ["Playful", "Ghost Writing", "Ghost Orbs"],			
+      "Moroi": ["Spirit Box", "Cold Spots", "Ghost Orbs"],
+      "Shade": ["Cold Spots", "Playful", "Ghost Orbs"],
+      "Jumbee": ["Spirit Box", "Cold Spots", "EMF Sensor"]
     };
 
     const selectedEvidence = new Set();
-
     const ghostList = document.getElementById('ghostList');
     const evidenceButtons = document.querySelectorAll('#evidence-buttons .btn');
 
     function renderGhosts() {
       ghostList.innerHTML = '';
       for (const [ghost, evidences] of Object.entries(ghostData)) {
-        const match = [...selectedEvidence].every(ev => evidences.includes(ev));
+        const isMatch = [...selectedEvidence].every(ev => evidences.includes(ev));
         const div = document.createElement('div');
-        div.className = 'ghost' + (match && selectedEvidence.size ? ' highlight' : '');
+        div.className = 'ghost' + (isMatch && selectedEvidence.size > 0 ? ' highlight' : '');
         div.textContent = ghost;
         ghostList.appendChild(div);
       }
